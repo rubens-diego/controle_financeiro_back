@@ -1,0 +1,13 @@
+.idea/
+.vscode/
+node_modules/
+build/
+temp/
+.enve*
+dist/
+coverage/*
+coverage/
+uploads/*
+!uploads/.gitkeep
+.DS_Store
+coverage/

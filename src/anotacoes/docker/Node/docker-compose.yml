@@ -1,0 +1,32 @@
+version: '3' # nome  ada  versão
+
+services: # inicia um novo serviço
+    node: # nome do imagem a ser levantado
+        image: controle_financeiro_back_node # imagem qu sera adicionada
+        build: .
+        volumes: # demonstra o caminho da dos  volumes.
+            - .:/workspace
+        ports: #portas abertas  e  publicas compartilhadas  com a  maquina
+            - '3333:3333' # portas  dinamicas  basta colocar  o numero da  porta -"22" do lado do container a  do lado da maquina sera selecioanda  altomaticmante
+        #command: --auth root:root #  comando que são gerados  apos  o comando do docker run
+        depends_on: # sobe primeiramente  os  componetes que dependem antes do principal
+            - db
+        networks:
+            - my_network
+
+    db:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: root
+        ports:
+            - '5432:5432'
+        volumes:
+            - ./dados_postgres:/var/lib/postgresql/data
+        networks:
+            my_network:
+                aliases:
+                    - pgsql
+
+networks:
+    my_network:

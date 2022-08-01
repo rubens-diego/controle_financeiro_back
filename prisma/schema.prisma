@@ -1,0 +1,76 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model ForgotUsers {
+    id                      Int      @id(map: "PK_922a040e4ac0076954f83a42f57") @default(autoincrement())
+    hash_forgotten_password String?  @unique(map: "UQ_9440ab4dc203b49b6245a72b69d") @map("hash_forgotten-password") @db.VarChar(250)
+    user_id_fk              Int?
+    created_at              DateTime @default(now()) @db.Timestamp(6)
+
+    users Users? @relation(fields: [user_id_fk], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_forgot_user")
+
+    @@map("forgot_users")
+}
+
+model Menus {
+    id                Int      @id(map: "PK_3fec3d93327f4538e0cbd4349c4") @default(autoincrement())
+    name_menu         String   @db.VarChar(30)
+    name_rota_menu    String   @db.VarChar(30)
+    name_icon_menu    String   @db.VarChar(30)
+    reference_id_menu Int?
+    role_id_fk        Int
+    created_at        DateTime @default(now()) @db.Timestamp(6)
+
+    menus       Menus?      @relation("menusTomenus", fields: [reference_id_menu], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_menus_menus")
+    roles       Roles       @relation(fields: [role_id_fk], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_menus_user_profiles")
+    other_menus Menus[]     @relation("menusTomenus")
+    user_menus  UserMenus[]
+
+    @@map("menus")
+}
+
+model Roles {
+    id         Int      @id(map: "PK_c1433d71a4838793a49dcad46ab") @default(autoincrement())
+    name       String?  @unique(map: "UQ_648e3f5447f725579d7d4ffdfb7") @db.VarChar(250)
+    created_at DateTime @default(now()) @db.Timestamp(6)
+    menus      Menus[]
+    users      Users[]
+
+    @@map("roles")
+}
+
+model UserMenus {
+    id         Int      @id(map: "PK_94464e0379fbfb392dcb7b8bf27") @default(autoincrement())
+    user_id_fk Int
+    menu_id_fk Int
+    created_at DateTime @default(now()) @db.Timestamp(6)
+    menus      Menus    @relation(fields: [menu_id_fk], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_menus_users")
+    users      Users    @relation(fields: [user_id_fk], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_users_menus")
+
+    @@map("user_menus")
+}
+
+model Users {
+    id                       Int       @id(map: "PK_a3ffb1c0c8416b9fc6f907b7433") @default(autoincrement())
+    user_name                String?   @unique(map: "UQ_074a1f262efaca6aba16f7ed920") @db.VarChar(250)
+    password                 String?   @db.VarChar(250)
+    active                   Boolean   @default(true)
+    blocked                  Boolean   @default(true)
+    refresh_token            String?   @db.VarChar(500)
+    data_valid_refresh_token DateTime? @db.Date
+    user_admin               Boolean   @default(false)
+    role_id_fk               Int?
+    created_at               DateTime  @default(now()) @db.Timestamp(6)
+
+    roles        Roles?        @relation(fields: [role_id_fk], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_users_roles")
+    forgot_users ForgotUsers[]
+    user_menus   UserMenus[]
+
+    @@map("users")
+}

@@ -1,0 +1,109 @@
+docker run --name postgres -e POSTGRES_PASSWORD=root -p 5432:5432 -d postgres
+
+docker run --name mysql -e MYSQL_ROOT_PASSWORD=root -p 3306:3306 -d mysql:tag    // tag  e  versao do mysql
+
+docker  run -e MYSQL_ROOT_PASSWORD=root --name mysql5 -d -p 3306:3306  mysql:5.7
+
+docker  inspect nome-container-docker = verifica as  configurações
+
+docker  images = mostras as imagens  ja  intaladas
+
+docker image history <nome  ou id  da   imagem> = mostra  o historico de  criação da  imagem
+
+docker container rmi <nome  ou id  da   imagem> = remove todas  as imagem
+
+docker  pull nome-imagem-docker = baixa a imagem docker
+
+docker  rm nome-container =  deleta OS containes
+
+docker  ps  = mostras as  imagens  rotando
+
+docker  ps  -a = mostras as todas imagens  
+
+docker stats = mostra as  estatisticas  dos  containes
+
+docker attach ubuntu = libera o terminal no container
+
+docker rename  <nome atual> <novo nome> = renomeia o container o terminal no container
+
+docker container prune = remove todos  os  containers  parados
+
+docker port <nome  ou id  da   imagem>  == mostra as portas  mapeadas.
+
+
+
+Dockerfile
+
+# comentários
+
+INSTRUÇOES argumentos
+
+RUN apt-get update && apt-get upgrade &&  apt-get install -y git ==> adiciona  os  comandos na imagem. (cadas Run gerar  uma  nova camada  a  imagem)
+
+
+EXPOSE <porta>   ==> expõe a porta 
+
+CMD <Comando>  ==> lança comando para  iniciar  algo por  exemplo 
+
+COPY  e ADD ==> basicamente  para  adicionar  os containers para  dentro do container
+
+
+
+
+
+
+
+
+
+FROM ==Irá  partit de uma  imagem base
+
+  
+  
+  
+  comando => docker  build -t rubens . => para rodar  o Dockerfile o ponto e  para  demosntrar  o cameniha da  pasta atual
+  
+  
+  
+  
+  =================================================================================================================================================================================================================================
+  
+  docker-compose.yml
+  
+  version: '3' # nome  ada  versão 
+
+
+services: # inicia um novo serviço
+    cloud9: # nome do imagem a ser levantado 
+        
+        #image: sapk/cloud9 # imagem qu sera adicionada 
+        build: .
+        volumes: # demonstra o caminho da dos  volumes.
+            - .:/workspace
+        ports:  #portas abertas  e  publicas compartilhadas  com a  maquina
+            - "8081:8081" # portas  dinamicas  basta colocar  o numero da  porta -"22" do lado do container a  do lado da maquina sera selecioanda  altomaticmante
+        #command: --auth root:root #  comando que são gerados  apos  o comando do docker run
+        depends_on: # sobe primeiramente  os  componetes que dependem antes do principal
+            - db
+
+
+    db:
+        image: postgres
+        restart: always
+        environment: 
+            POSTGRES_PASSWORD: root
+        ports: 
+            - "5432:5432"
+
+
+        # comandos do docker composr
+         # docker-compose up  ==> executa  o arquivo docker compose e  gera os images
+         # docker-compose up -p  ==> executa  o arquivo docker compose e  gera os images e não trava  o terminal
+         # docker-compose -f up <nome do arquivo> ==> executa  o arquivo com nomes diferendres a docker-compose.yml docker compose e  gera os images
+         # docker-compose -f up -p <nome do arquivo>  ==> executa arquivo com nomes diferendres a docker-compose.yml  o arquivo docker compose e  gera os images e não trava  o terminal
+         # docker-compose down ==> para a execução de todas as  comtainas  relacionados  com a  arquivo e  os  apaga também
+         # docker-compose stop ==> para a execução de todas as  comtainas  relacionados  com a  arquivo e  os  apaga também
+         # docker-compose up -d --scale <nome do serviço>=<numero de vezes> ==> pode levantar  varias veses a mesma  instancia so que as  portas  devem estar  dinamicas
+         # docker-compose run -p 8083:8081  cloud9       ==> sobrescreve algumas  configuraões do serviço que eu escolher 
+        # docker-compose build =  so monta o buldo da  imagem
+        #docker-compose up --build so levanta  o container e ja  biulda junto
+
