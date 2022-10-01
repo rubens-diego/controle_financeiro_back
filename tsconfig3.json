@@ -17,6 +17,13 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "strict": true
+    "strict": true,
+    "rootDir": "./src",
+    "paths": {
+    //   // "@services/*": ["src/services/*"],
+    "@module/*": [
+      "src/module/*"
+    ],
+    }
   }
 }
